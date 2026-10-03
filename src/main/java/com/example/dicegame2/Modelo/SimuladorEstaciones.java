@@ -15,7 +15,7 @@ public class SimuladorEstaciones {
     public SimuladorEstaciones() {
         this.estaciones = new ArrayList<>();
         this.historialMetrics = new ArrayList<>();
-        this.turnoActual = 1;
+        this.turnoActual = 0;
         this.totalUnidadesCompletadas = 0;
 
         inicializarEstaciones();
@@ -66,7 +66,7 @@ public class SimuladorEstaciones {
      * Las demas estaciones procesan segun las personas disponibles en su cola.
      */
     public void avanzarTurno() {
-        if (turnoActual > 20) return;
+        if (turnoActual >= 20) return;
 
         // Procesar de atras hacia adelante (de la estacion 10 a la 1)
         for (int i = estaciones.size() - 1; i >= 0; i--) {
