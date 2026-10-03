@@ -4,6 +4,7 @@ import com.example.dicegame2.Modelo.Dado;
 import com.example.dicegame2.Modelo.EstacionTrabajo;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -15,13 +16,13 @@ import java.util.ArrayList;
 
 /**
  * Representacion visual de una estacion de trabajo.
- * Muestra el trabajador, dados rojos cuadrados y la cola de puntos azules.
+ * Utiliza FlowPane para envolver los puntos azules en multiples filas hacia abajo.
  */
 public class VistaEstacion extends VBox {
     private int idEstacion;
     private Label lblTitulo;
     private HBox contenedorDados;
-    private HBox contenedorPuntosAzules;
+    private FlowPane contenedorPuntosAzules;
     private boolean seleccionada;
 
     public VistaEstacion(int idEstacion) {
@@ -35,21 +36,24 @@ public class VistaEstacion extends VBox {
         this.contenedorDados.setAlignment(Pos.CENTER);
         this.contenedorDados.setMinHeight(35);
 
-        this.contenedorPuntosAzules = new HBox(3);
+        // FlowPane permite saltos de linea automaticos para los puntos azules
+        this.contenedorPuntosAzules = new FlowPane();
+        this.contenedorPuntosAzules.setHgap(3);
+        this.contenedorPuntosAzules.setVgap(3);
         this.contenedorPuntosAzules.setAlignment(Pos.CENTER);
-        this.contenedorPuntosAzules.setMinHeight(15);
+        this.contenedorPuntosAzules.setPrefWrapLength(95); // Ancho limite antes de bajar de fila
 
         this.setAlignment(Pos.CENTER);
         this.setSpacing(6);
         this.setStyle("-fx-border-color: #a0a0a0; -fx-border-width: 1.5; -fx-padding: 8; -fx-background-color: #ffffff; -fx-border-radius: 8; -fx-background-radius: 8;");
         this.setPrefWidth(125);
-        this.setPrefHeight(135);
+        this.setPrefHeight(150); // Mayor altura para acomodar multiples renglones de puntos
 
         this.getChildren().addAll(lblTitulo, contenedorDados, contenedorPuntosAzules);
     }
 
     /**
-     * Redibuja la estacion creando los dados rojos y la fila de puntos azules.
+     * Redibuja la estacion organizando los puntos azules en lineas hacia abajo.
      */
     public void actualizar(EstacionTrabajo estacion) {
         // Dibujar Dados Rojos
@@ -66,26 +70,25 @@ public class VistaEstacion extends VBox {
             }
         }
 
-        // Dibujar Puntos Azules
+        // Dibujar Puntos Azules con salto de linea
         this.contenedorPuntosAzules.getChildren().clear();
         int cantidad = estacion.getCantidadEnCola();
-        int puntosADibujar = Math.min(cantidad, 10);
+
+        // Muestra hasta 24 puntos organizados dinamicamente en varias filas
+        int puntosADibujar = Math.min(cantidad, 24);
 
         for (int i = 0; i < puntosADibujar; i++) {
             Circle puntoAzul = new Circle(4, Color.web("#1E90FF"));
             this.contenedorPuntosAzules.getChildren().add(puntoAzul);
         }
 
-        if (cantidad > 10) {
-            Label lblExtra = new Label("+" + (cantidad - 10));
+        if (cantidad > 24) {
+            Label lblExtra = new Label("+" + (cantidad - 24));
             lblExtra.setStyle("-fx-font-size: 9px; -fx-font-weight: bold; -fx-text-fill: #1E90FF;");
             this.contenedorPuntosAzules.getChildren().add(lblExtra);
         }
     }
 
-    /**
-     * Genera un cuadrado rojo con esquinas redondeadas y el numero blanco dentro.
-     */
     private StackPane crearFiguraDado(int valor) {
         Rectangle cuadradoRojo = new Rectangle(28, 28);
         cuadradoRojo.setArcWidth(8);
