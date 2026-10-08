@@ -9,12 +9,14 @@ import java.util.ArrayList;
 public class SimuladorEstaciones {
     private ArrayList<EstacionTrabajo> estaciones;
     private ArrayList<RegistroTurno> historialMetrics;
+    private ArrayList<Integer> tiemposEnSistema;
     private int turnoActual;
     private int totalUnidadesCompletadas;
 
     public SimuladorEstaciones() {
         this.estaciones = new ArrayList<>();
         this.historialMetrics = new ArrayList<>();
+        this.tiemposEnSistema = new ArrayList<>();
         this.turnoActual = 0;
         this.totalUnidadesCompletadas = 0;
 
@@ -26,7 +28,6 @@ public class SimuladorEstaciones {
      */
     private void inicializarEstaciones() {
         for (int i = 1; i <= 10; i++) {
-            // Capacidad de 100 elementos por cola circular
             estaciones.add(new EstacionTrabajo(i, 100));
         }
     }
@@ -68,27 +69,23 @@ public class SimuladorEstaciones {
     public void avanzarTurno() {
         if (turnoActual >= 20) return;
 
-        // Procesar de atras hacia adelante (de la estacion 10 a la 1)
         for (int i = estaciones.size() - 1; i >= 0; i--) {
             EstacionTrabajo actual = estaciones.get(i);
             int capacidadDado = actual.getCapacidadTotal();
 
             if (i == 0) {
-                // La estacion 1 es la entrada del sistema (no tiene cola previa)
-                // Genera tantas personas como indique el dado y las manda a la Estacion 2.
                 int movidas = capacidadDado;
                 EstacionTrabajo siguiente = estaciones.get(1);
 
                 for (int k = 0; k < movidas; k++) {
-                    siguiente.agregarPersona(new Persona(turnoActual));
+                    siguiente.agregarPersona(new Persona(turnoActual + 1));
                 }
 
                 historialMetrics.add(new RegistroTurno(
-                        turnoActual, actual.getIdEstacion(), capacidadDado, movidas, 0, 0
+                        turnoActual + 1, actual.getIdEstacion(), capacidadDado, movidas, 0, 0
                 ));
 
             } else if (i < estaciones.size() - 1) {
-                // Las estaciones 2 a 9 procesan lo que hay en su cola circular
                 ArrayList<Persona> personasProcesadas = actual.procesarTurno();
                 int movidas = personasProcesadas.size();
 
@@ -98,18 +95,21 @@ public class SimuladorEstaciones {
                 }
 
                 historialMetrics.add(new RegistroTurno(
-                        turnoActual, actual.getIdEstacion(), capacidadDado, movidas, actual.getCantidadEnCola(), 0
+                        turnoActual + 1, actual.getIdEstacion(), capacidadDado, movidas, actual.getCantidadEnCola(), 0
                 ));
 
             } else {
-                // La estacion 10 es la salida final de la linea
                 ArrayList<Persona> personasProcesadas = actual.procesarTurno();
                 int movidas = personasProcesadas.size();
 
                 totalUnidadesCompletadas += movidas;
 
+                for (Persona p : personasProcesadas) {
+                    tiemposEnSistema.add(p.calcularTiempoEnSistema(turnoActual + 1));
+                }
+
                 historialMetrics.add(new RegistroTurno(
-                        turnoActual, actual.getIdEstacion(), capacidadDado, movidas, actual.getCantidadEnCola(), movidas
+                        turnoActual + 1, actual.getIdEstacion(), capacidadDado, movidas, actual.getCantidadEnCola(), movidas
                 ));
             }
         }
@@ -128,6 +128,10 @@ public class SimuladorEstaciones {
 
     public ArrayList<RegistroTurno> getHistorialMetrics() {
         return historialMetrics;
+    }
+
+    public ArrayList<Integer> getTiemposEnSistema() {
+        return tiemposEnSistema;
     }
 
     public int getTotalUnidadesCompletadas() {
