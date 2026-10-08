@@ -5,25 +5,24 @@ package com.example.dicegame2.Modelo;
  * Se utiliza para generar las graficas al finalizar los 20 turnos.
  */
 public class RegistroTurno {
-    private int numeroTurno;
+    private int turno;
     private int idEstacion;
     private int valorDado;
-    private int unidadesMovidas;
-    private int unidadesEnCola;
-    private int unidadesSalidasSistema; // Si falta algun dato para un grafica, lo agrego luego
+    private int personasMovidas;
+    private int cantidadEnCola;
+    private int personasCompletadas;
 
-    public RegistroTurno(int numeroTurno, int idEstacion, int valorDado,
-                         int unidadesMovidas, int unidadesEnCola, int unidadesSalidasSistema) {
-        this.numeroTurno = numeroTurno;
+    public RegistroTurno(int turno, int idEstacion, int valorDado, int personasMovidas, int cantidadEnCola, int personasCompletadas) {
+        this.turno = turno;
         this.idEstacion = idEstacion;
         this.valorDado = valorDado;
-        this.unidadesMovidas = unidadesMovidas;
-        this.unidadesEnCola = unidadesEnCola;
-        this.unidadesSalidasSistema = unidadesSalidasSistema;
+        this.personasMovidas = personasMovidas;
+        this.cantidadEnCola = cantidadEnCola;
+        this.personasCompletadas = personasCompletadas;
     }
 
-    public int getNumeroTurno() {
-        return numeroTurno;
+    public int getTurno() {
+        return turno;
     }
 
     public int getIdEstacion() {
@@ -34,15 +33,15 @@ public class RegistroTurno {
         return valorDado;
     }
 
-    public int getUnidadesMovidas() {
-        return unidadesMovidas;
+    public int getPersonasMovidas() {
+        return personasMovidas;
     }
 
-    public int getUnidadesEnCola() {
-        return unidadesEnCola;
+    public int getCantidadEnCola() {
+        return cantidadEnCola;
     }
 
-    public int getUnidadesSalidasSistema() {
-        return unidadesSalidasSistema;
+    public int getPersonasCompletadas() {
+        return personasCompletadas;
     }
 }

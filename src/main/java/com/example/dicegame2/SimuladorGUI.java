@@ -2,7 +2,7 @@ package com.example.dicegame2;
 
 import com.example.dicegame2.Controlador.SimuladorControlador;
 import com.example.dicegame2.Modelo.SimuladorEstaciones;
-import com.example.dicegame2.Vista.VistaEstacion;
+import com.example.dicegame2.Vista.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
