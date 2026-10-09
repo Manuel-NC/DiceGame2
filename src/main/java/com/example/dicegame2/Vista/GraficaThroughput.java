@@ -17,6 +17,11 @@ import java.util.ArrayList;
  * Grafica de Throughput: muestra la produccion acumulada por turno.
  */
 public class GraficaThroughput extends Stage {
+
+    /**
+     * Constructor que configura el diagrama BarChart de rendimiento acumulado.
+     * @param modelo Instancia del simulador.
+     */
     public GraficaThroughput(SimuladorEstaciones modelo) {
         setTitle("Rendimiento (Throughput)");
 
@@ -31,7 +36,7 @@ public class GraficaThroughput extends Stage {
         barChart.setAnimated(false);
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        ArrayList<RegistroTurno> historial = modelo.getHistorialMetrics();
+        ArrayList<RegistroTurno> historial = modelo.getMetricasHistorial();
 
         int acumulado = 0;
         for (int t = 1; t <= 20; t++) {

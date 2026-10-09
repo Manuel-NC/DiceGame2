@@ -25,6 +25,10 @@ public class VistaEstacion extends VBox {
     private FlowPane contenedorPuntosAzules;
     private boolean seleccionada;
 
+    /**
+     * Constructor que configura los componentes visuales de la estacion.
+     * @param idEstacion Identificador numérico de la estacion.
+     */
     public VistaEstacion(int idEstacion) {
         this.idEstacion = idEstacion;
         this.seleccionada = false;
@@ -53,7 +57,8 @@ public class VistaEstacion extends VBox {
     }
 
     /**
-     * Redibuja la estacion organizando los puntos azules en lineas hacia abajo.
+     * Redibuja la estacion consultando los dados y la cantidad de personas en su cola.
+     * @param estacion Objeto del modelo correspondiente a esta estacion.
      */
     public void actualizar(EstacionTrabajo estacion) {
         // Dibujar Dados Rojos
@@ -89,6 +94,11 @@ public class VistaEstacion extends VBox {
         }
     }
 
+    /**
+     * Crea un componente grafico StackPane que representa un dado rojo con su numero blanco.
+     * @param valor Numero del dado (1 a 6).
+     * @return Panel grafico del dado.
+     */
     private StackPane crearFiguraDado(int valor) {
         Rectangle cuadradoRojo = new Rectangle(28, 28);
         cuadradoRojo.setArcWidth(8);
@@ -103,6 +113,10 @@ public class VistaEstacion extends VBox {
         return dadoPane;
     }
 
+    /**
+     * Aplica un borde destacado cuando la estacion es seleccionada para mover un dado.
+     * @param seleccionada true si esta seleccionada, false en caso contrario.
+     */
     public void setSeleccionada(boolean seleccionada) {
         this.seleccionada = seleccionada;
         if (seleccionada) {

@@ -17,6 +17,11 @@ import java.util.ArrayList;
  * Grafica de Numero en el Sistema: muestra la cantidad total en colas por turno.
  */
 public class GraficaNumeroEnSistema extends Stage {
+
+    /**
+     * Constructor que configura la grafica de inventario en proceso (WIP).
+     * @param modelo Instancia del simulador.
+     */
     public GraficaNumeroEnSistema(SimuladorEstaciones modelo) {
         setTitle("Número en el Sistema (Number in System)");
 
@@ -31,7 +36,7 @@ public class GraficaNumeroEnSistema extends Stage {
         barChart.setAnimated(false);
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        ArrayList<RegistroTurno> historial = modelo.getHistorialMetrics();
+        ArrayList<RegistroTurno> historial = modelo.getMetricasHistorial();
 
         for (int t = 0; t <= 20; t++) {
             int totalEnSistema = 0;

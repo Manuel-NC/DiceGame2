@@ -13,6 +13,10 @@ public class SimuladorControlador {
     private int indiceOrigenSeleccionado;
     private boolean puedeMoverDados;
 
+    /**
+     * Constructor del controlador.
+     * @param modelo Instancia principal del simulador de estaciones.
+     */
     public SimuladorControlador(SimuladorEstaciones modelo) {
         this.modelo = modelo;
         this.indiceOrigenSeleccionado = -1;
@@ -20,8 +24,10 @@ public class SimuladorControlador {
     }
 
     /**
-     * Maneja el clic sobre una estacion para mover dados.
-     * Solo permite mover si el boton no esta en estado "Mover".
+     * Maneja el clic sobre una estacion para transferir dados de lugar.
+     * Bloquea la seleccion si el juego esta en la fase "Mover" (post-lanzamiento).
+     * @param indiceEstacion Indice de la estacion clickeada.
+     * @param vistasEstaciones Lista de vistas de las estaciones.
      */
     public void seleccionarEstacion(int indiceEstacion, ArrayList<VistaEstacion> vistasEstaciones) {
         // Si el boton dice "Mover" (post-lanzamiento), se bloquea el cambio de dados
@@ -47,6 +53,7 @@ public class SimuladorControlador {
 
     /**
      * Paso 1 del turno: Lanza los dados y bloquea el movimiento de dados.
+     * @param vistasEstaciones Lista de vistas a actualizar.
      */
     public void lanzarDados(ArrayList<VistaEstacion> vistasEstaciones) {
         modelo.lanzarDados();
@@ -62,6 +69,7 @@ public class SimuladorControlador {
 
     /**
      * Paso 2 del turno: Procesa las personas en la linea y reactiva el movimiento de dados para el siguiente turno.
+     * @param vistasEstaciones Lista de vistas a actualizar.
      */
     public void procesarMovimiento(ArrayList<VistaEstacion> vistasEstaciones) {
         modelo.avanzarTurno();
@@ -69,6 +77,10 @@ public class SimuladorControlador {
         actualizarVistas(vistasEstaciones);
     }
 
+    /**
+     * Sincroniza la representacion visual de todas las estaciones con los datos actuales del modelo.
+     * @param vistasEstaciones Lista de las vistas a redibujar.
+     */
     public void actualizarVistas(ArrayList<VistaEstacion> vistasEstaciones) {
         for (int i = 0; i < vistasEstaciones.size(); i++) {
             vistasEstaciones.get(i).actualizar(modelo.getEstaciones().get(i));

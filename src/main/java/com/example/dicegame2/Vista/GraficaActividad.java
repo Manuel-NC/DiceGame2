@@ -26,6 +26,10 @@ public class GraficaActividad extends Stage {
     private int estacionSeleccionada; // 0 = Todas, 1..10 = Estaciones
     private boolean mostrarMoved;      // true = Moved, false = Rolled
 
+    /**
+     * Constructor que configura el diagrama BarChart de actividad.
+     * @param modelo Instancia del simulador para extraer el historial de metricas.
+     */
     public GraficaActividad(SimuladorEstaciones modelo) {
         this.modelo = modelo;
         this.estacionSeleccionada = 0;
@@ -77,12 +81,15 @@ public class GraficaActividad extends Stage {
         setScene(scene);
     }
 
+    /**
+     * Filtra y procesa los datos del historial para actualizar las barras de la gráfica.
+     */
     private void actualizarGrafica() {
         barChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName(mostrarMoved ? "Moved" : "Rolled");
 
-        ArrayList<RegistroTurno> historial = modelo.getHistorialMetrics();
+        ArrayList<RegistroTurno> historial = modelo.getMetricasHistorial();
 
         for (int t = 1; t <= 20; t++) {
             int suma = 0;

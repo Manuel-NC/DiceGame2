@@ -8,14 +8,17 @@ import java.util.ArrayList;
  */
 public class SimuladorEstaciones {
     private ArrayList<EstacionTrabajo> estaciones;
-    private ArrayList<RegistroTurno> historialMetrics;
+    private ArrayList<RegistroTurno> metricasHistorial;
     private ArrayList<Integer> tiemposEnSistema;
     private int turnoActual;
     private int totalUnidadesCompletadas;
 
+    /**
+     * Constructor que inicializa el motor numérico de la simulacion.
+     */
     public SimuladorEstaciones() {
         this.estaciones = new ArrayList<>();
-        this.historialMetrics = new ArrayList<>();
+        this.metricasHistorial = new ArrayList<>();
         this.tiemposEnSistema = new ArrayList<>();
         this.turnoActual = 0;
         this.totalUnidadesCompletadas = 0;
@@ -25,6 +28,9 @@ public class SimuladorEstaciones {
 
     /**
      * Crea las 10 estaciones de trabajo.
+     * Configura el estado inicial del juego: la Estacion 1 inicia vacia y las estaciones 2 a 10
+     * cargan 4 personas en sus colas con turno de llegada 0.
+     * Carga inicial de las Colas
      */
     private void inicializarEstaciones() {
         for (int i = 1; i <= 10; i++) {
@@ -49,6 +55,9 @@ public class SimuladorEstaciones {
 
     /**
      * Mueve un dado de la estacion origen a la estacion destino (Mecanica de Game 2).
+     * @param indiceOrigen Indice de la estacion de origen (0 a 9).
+     * @param indiceDestino Indice de la estacion de destino (0 a 9).
+     * @return true si se realizo el movimiento correctamente, false en caso contrario.
      */
     public boolean moverDado(int indiceOrigen, int indiceDestino) {
         if (indiceOrigen >= 0 && indiceOrigen < estaciones.size() &&
@@ -80,6 +89,7 @@ public class SimuladorEstaciones {
             int capacidadDado = actual.getCapacidadTotal();
 
             if (i == 0) {
+                // Estacion 1: Genera personas segun sus dados y las ENCOLA en la Estacion 2
                 int movidas = capacidadDado;
                 EstacionTrabajo siguiente = estaciones.get(1);
 
@@ -87,11 +97,12 @@ public class SimuladorEstaciones {
                     siguiente.agregarPersona(new Persona(turnoActual + 1));
                 }
 
-                historialMetrics.add(new RegistroTurno(
+                metricasHistorial.add(new RegistroTurno(
                         turnoActual + 1, actual.getIdEstacion(), capacidadDado, movidas, 0, 0
                 ));
 
             } else if (i < estaciones.size() - 1) {
+                // Estaciones 2 a 9: DESENCOLAN de su propia cola y ENCOLAN en la siguiente
                 ArrayList<Persona> personasProcesadas = actual.procesarTurno();
                 int movidas = personasProcesadas.size();
 
@@ -100,11 +111,12 @@ public class SimuladorEstaciones {
                     siguiente.agregarPersona(p);
                 }
 
-                historialMetrics.add(new RegistroTurno(
+                metricasHistorial.add(new RegistroTurno(
                         turnoActual + 1, actual.getIdEstacion(), capacidadDado, movidas, actual.getCantidadEnCola(), 0
                 ));
 
             } else {
+                // Estacion 10: DESENCOLA personas para sacarlas del sistema y calcula tiempos de ciclo
                 ArrayList<Persona> personasProcesadas = actual.procesarTurno();
                 int movidas = personasProcesadas.size();
 
@@ -114,7 +126,7 @@ public class SimuladorEstaciones {
                     tiemposEnSistema.add(p.calcularTiempoEnSistema(turnoActual + 1));
                 }
 
-                historialMetrics.add(new RegistroTurno(
+                metricasHistorial.add(new RegistroTurno(
                         turnoActual + 1, actual.getIdEstacion(), capacidadDado, movidas, actual.getCantidadEnCola(), movidas
                 ));
             }
@@ -132,8 +144,8 @@ public class SimuladorEstaciones {
         return turnoActual;
     }
 
-    public ArrayList<RegistroTurno> getHistorialMetrics() {
-        return historialMetrics;
+    public ArrayList<RegistroTurno> getMetricasHistorial() {
+        return metricasHistorial;
     }
 
     public ArrayList<Integer> getTiemposEnSistema() {
