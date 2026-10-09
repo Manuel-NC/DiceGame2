@@ -23,7 +23,7 @@ public class SimuladorGUI extends Application {
     private Label lblTurno;
     private Label lblTotal;
     private Button btnAccion;
-    private Button btnPerformance;
+    private Button btnRendimiento;
     private boolean esFaseTirar;
 
     @Override
@@ -87,22 +87,23 @@ public class SimuladorGUI extends Application {
         Button btnThroughput = new Button("Throughput");
         Button btnNumSystem = new Button("Number in system");
         Button btnTimeSystem = new Button("Time in system");
-        btnPerformance = new Button("Your performance");
+        btnRendimiento = new Button("Your performance");
 
-        btnPerformance.setDisable(true); // Se habilita solo al terminar el juego
+        btnRendimiento.setDisable(true); // Se habilita solo al terminar el juego
 
         btnActivity.setMaxWidth(Double.MAX_VALUE);
         btnThroughput.setMaxWidth(Double.MAX_VALUE);
         btnNumSystem.setMaxWidth(Double.MAX_VALUE);
         btnTimeSystem.setMaxWidth(Double.MAX_VALUE);
-        btnPerformance.setMaxWidth(Double.MAX_VALUE);
+        btnRendimiento.setMaxWidth(Double.MAX_VALUE);
 
         btnActivity.setOnAction(e -> new GraficaActividad(modelo).show());
         btnThroughput.setOnAction(e -> new GraficaThroughput(modelo).show());
         btnNumSystem.setOnAction(e -> new GraficaNumeroEnSistema(modelo).show());
         btnTimeSystem.setOnAction(e -> new GraficaTiempoEnSistema(modelo).show());
-        btnPerformance.setOnAction(e -> new GraficaRendimiento(modelo).show());
+        btnRendimiento.setOnAction(e -> new GraficaRendimiento(modelo).show());
 
+        // Manejo dinámico del botón de accion (Tirar / Mover)
         btnAccion.setOnAction(e -> {
             if (esFaseTirar) {
                 controlador.lanzarDados(vistasEstaciones);
@@ -118,7 +119,7 @@ public class SimuladorGUI extends Application {
                     btnAccion.setDisable(true);
                     btnAccion.setText("Finalizado");
                     lblTurno.setText("Turnos\n20 (Fin)");
-                    btnPerformance.setDisable(false); // Habilitar grafica de rendimiento
+                    btnRendimiento.setDisable(false); // Habilitar grafica de rendimiento
                 } else {
                     lblTurno.setText("Turnos\n" + turnoActual);
                     btnAccion.setText("Tirar");
@@ -127,7 +128,7 @@ public class SimuladorGUI extends Application {
             }
         });
 
-        panelControl.getChildren().addAll(btnActivity, btnThroughput, btnNumSystem, btnTimeSystem, btnPerformance, lblTurno, lblTotal, btnAccion);
+        panelControl.getChildren().addAll(btnActivity, btnThroughput, btnNumSystem, btnTimeSystem, btnRendimiento, lblTurno, lblTotal, btnAccion);
         root.setRight(panelControl);
 
         controlador.actualizarVistas(vistasEstaciones);

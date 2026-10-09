@@ -16,6 +16,11 @@ import java.util.ArrayList;
  * Grafica de Tiempo en Sistema: tiempo de permanencia de cada elemento completado.
  */
 public class GraficaTiempoEnSistema extends Stage {
+
+    /**
+     * Constructor que configura la grafica del tiempo de ciclo por orden de llegada.
+     * @param modelo Instancia del simulador.
+     */
     public GraficaTiempoEnSistema(SimuladorEstaciones modelo) {
         setTitle("Tiempo en el Sistema (Time in System)");
 

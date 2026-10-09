@@ -16,6 +16,11 @@ import javafx.stage.Stage;
  * Grafica de Rendimiento del Jugador: resumen final al concluir la simulacion.
  */
 public class GraficaRendimiento extends Stage {
+
+    /**
+     * Constructor que presenta la métrica final de la partida.
+     * @param modelo Instancia del simulador.
+     */
     public GraficaRendimiento(SimuladorEstaciones modelo) {
         setTitle("Tu Rendimiento (Your Performance)");
 

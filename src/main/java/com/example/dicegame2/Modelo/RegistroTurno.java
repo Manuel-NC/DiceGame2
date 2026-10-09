@@ -12,6 +12,15 @@ public class RegistroTurno {
     private int cantidadEnCola;
     private int personasCompletadas;
 
+    /**
+     * Constructor que inicializa los datos del registro de un turno.
+     * @param turno Numero de turno evaluado.
+     * @param idEstacion Identificador de la estacion.
+     * @param valorDado Suma de la capacidad de los dados.
+     * @param personasMovidas Unidades atendidas y movidas hacia la siguiente estacion.
+     * @param cantidadEnCola Unidades remanentes retenidas en la cola.
+     * @param personasCompletadas Unidades completadas que salieron definitivamente del sistema.
+     */
     public RegistroTurno(int turno, int idEstacion, int valorDado, int personasMovidas, int cantidadEnCola, int personasCompletadas) {
         this.turno = turno;
         this.idEstacion = idEstacion;
