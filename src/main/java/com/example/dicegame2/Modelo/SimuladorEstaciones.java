@@ -29,6 +29,12 @@ public class SimuladorEstaciones {
     private void inicializarEstaciones() {
         for (int i = 1; i <= 10; i++) {
             estaciones.add(new EstacionTrabajo(i, 100));
+
+            if (i > 1) {
+                for (int k = 0; k < 4; k++) {
+                    estaciones.get(i - 1).agregarPersona(new Persona(0));
+                }
+            }
         }
     }
 

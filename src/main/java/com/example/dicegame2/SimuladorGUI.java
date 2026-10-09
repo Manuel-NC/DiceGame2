@@ -16,11 +16,6 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-/**
- * Punto de entrada principal de la aplicacion en JavaFX.
- * Coloca el tablero en U, el panel de control lateral con boton para lanzar dado, mover las personas
- * y gestiona el flujo principal.
- */
 public class SimuladorGUI extends Application {
     private SimuladorEstaciones modelo;
     private SimuladorControlador controlador;
@@ -28,6 +23,7 @@ public class SimuladorGUI extends Application {
     private Label lblTurno;
     private Label lblTotal;
     private Button btnAccion;
+    private Button btnPerformance;
     private boolean esFaseTirar;
 
     @Override
@@ -40,7 +36,7 @@ public class SimuladorGUI extends Application {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(20));
 
-        // TABLERO EN FORMA DE U (10 Estaciones)
+        // --- TABLERO EN FORMA DE U ---
         GridPane gridEstaciones = new GridPane();
         gridEstaciones.setHgap(15);
         gridEstaciones.setVgap(15);
@@ -53,17 +49,14 @@ public class SimuladorGUI extends Application {
             vistasEstaciones.add(vista);
         }
 
-        // Fila Superior (Estaciones 1 a 4)
         gridEstaciones.add(vistasEstaciones.get(0), 0, 0);
         gridEstaciones.add(vistasEstaciones.get(1), 1, 0);
         gridEstaciones.add(vistasEstaciones.get(2), 2, 0);
         gridEstaciones.add(vistasEstaciones.get(3), 3, 0);
 
-        // Lateral Derecho (Estaciones 5 y 6)
         gridEstaciones.add(vistasEstaciones.get(4), 3, 1);
         gridEstaciones.add(vistasEstaciones.get(5), 3, 2);
 
-        // Fila Inferior (Estaciones 7 a 10 de derecha a izquierda)
         gridEstaciones.add(vistasEstaciones.get(6), 3, 3);
         gridEstaciones.add(vistasEstaciones.get(7), 2, 3);
         gridEstaciones.add(vistasEstaciones.get(8), 1, 3);
@@ -71,42 +64,61 @@ public class SimuladorGUI extends Application {
 
         root.setCenter(gridEstaciones);
 
-        // PANEL DE CONTROL LATERAL
-        VBox panelControl = new VBox(15);
-        panelControl.setPadding(new Insets(20));
+        // --- PANEL DE CONTROL Y GRÁFICAS ---
+        VBox panelControl = new VBox(10);
+        panelControl.setPadding(new Insets(15));
         panelControl.setAlignment(Pos.CENTER);
-        panelControl.setPrefWidth(200);
+        panelControl.setPrefWidth(210);
         panelControl.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-background-color: #f8f9fa; -fx-border-radius: 8;");
 
         lblTurno = new Label("Turnos\n0");
         lblTurno.setAlignment(Pos.CENTER);
-        lblTurno.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-alignment: center;");
+        lblTurno.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-alignment: center;");
 
-        lblTotal = new Label("Unidades completadas: 0");
-        lblTotal.setStyle("-fx-font-size: 12px;");
+        lblTotal = new Label("Personas registradas: 0");
+        lblTotal.setStyle("-fx-font-size: 11px;");
 
-        // Boton unico para conmutar entre "Tirar" y "Mover"
         btnAccion = new Button("Tirar");
-        btnAccion.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-color: #d1c7bd; -fx-text-fill: #3b2219;");
+        btnAccion.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-color: #d1c7bd; -fx-text-fill: #3b2219;");
         btnAccion.setMaxWidth(Double.MAX_VALUE);
+
+        // Botones de las Gráficas
+        Button btnActivity = new Button("Activity");
+        Button btnThroughput = new Button("Throughput");
+        Button btnNumSystem = new Button("Number in system");
+        Button btnTimeSystem = new Button("Time in system");
+        btnPerformance = new Button("Your performance");
+
+        btnPerformance.setDisable(true); // Se habilita solo al terminar el juego
+
+        btnActivity.setMaxWidth(Double.MAX_VALUE);
+        btnThroughput.setMaxWidth(Double.MAX_VALUE);
+        btnNumSystem.setMaxWidth(Double.MAX_VALUE);
+        btnTimeSystem.setMaxWidth(Double.MAX_VALUE);
+        btnPerformance.setMaxWidth(Double.MAX_VALUE);
+
+        btnActivity.setOnAction(e -> new GraficaActividad(modelo).show());
+        btnThroughput.setOnAction(e -> new GraficaThroughput(modelo).show());
+        btnNumSystem.setOnAction(e -> new GraficaNumeroEnSistema(modelo).show());
+        btnTimeSystem.setOnAction(e -> new GraficaTiempoEnSistema(modelo).show());
+        btnPerformance.setOnAction(e -> new GraficaRendimiento(modelo).show());
 
         btnAccion.setOnAction(e -> {
             if (esFaseTirar) {
-                // Clic 1: Tirar dados (bloquea el movimiento de dados mientras diga "Mover")
                 controlador.lanzarDados(vistasEstaciones);
                 btnAccion.setText("Mover");
                 esFaseTirar = false;
             } else {
-                // Clic 2: Procesar avance y liberar movimiento de dados para el siguiente turno
                 controlador.procesarMovimiento(vistasEstaciones);
 
                 int turnoActual = modelo.getTurnoActual();
-                lblTotal.setText("Unidades completadas: " + modelo.getTotalUnidadesCompletadas());
+                lblTotal.setText("Personas registradas: " + modelo.getTotalUnidadesCompletadas());
 
                 if (turnoActual >= 20) {
                     btnAccion.setDisable(true);
                     btnAccion.setText("Finalizado");
                     lblTurno.setText("Turnos\n20 (Fin)");
+                    btnPerformance.setDisable(false); // Habilitar grafica de rendimiento
                 } else {
                     lblTurno.setText("Turnos\n" + turnoActual);
                     btnAccion.setText("Tirar");
@@ -115,13 +127,13 @@ public class SimuladorGUI extends Application {
             }
         });
 
-        panelControl.getChildren().addAll(lblTurno, lblTotal, btnAccion);
+        panelControl.getChildren().addAll(btnActivity, btnThroughput, btnNumSystem, btnTimeSystem, btnPerformance, lblTurno, lblTotal, btnAccion);
         root.setRight(panelControl);
 
         controlador.actualizarVistas(vistasEstaciones);
 
-        Scene scene = new Scene(root, 920, 620);
-        primaryStage.setTitle("The Dice Game 2");
+        Scene scene = new Scene(root, 950, 640);
+        primaryStage.setTitle("The Dice-Game 2 - Simulación de Línea de Producción");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
